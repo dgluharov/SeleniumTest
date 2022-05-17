@@ -1,5 +1,7 @@
 package net.progress.tests;
 
+import net.progress.POMs.LoginAndRegistrationPOM;
+import net.progress.POMs.WelcomePagePOM;
 import net.progress.helper.DriverHelper;
 import net.progress.helper.SelectorTypes;
 import org.junit.Assert;
@@ -18,6 +20,7 @@ import java.util.Random;
 
 public class LoginAndRegistration {
     private WebDriver driver;
+
 
     @Test
     public void sample() {
@@ -46,13 +49,16 @@ public class LoginAndRegistration {
     @Test
     public void registerUser() throws InterruptedException {
         driver = DriverHelper.getDriver();
+        LoginAndRegistrationPOM loginAndRegistrationPOM = new LoginAndRegistrationPOM(driver);
+        WelcomePagePOM welcomePagePOM = new WelcomePagePOM(driver);
         String username = getUniqueUser();
-        String password = "VeryStrongAutomation1234#$";
 
-        registerUser(driver, username, password);
+        loginAndRegistrationPOM.load();
+        loginAndRegistrationPOM.isLoaded();
+        loginAndRegistrationPOM.registerUser(username);
 
-
-        String confirmMessage = driver.findElement(By.cssSelector(".woocommerce-MyAccount-content > p:nth-child(1)")).getText();
+        welcomePagePOM.isLoaded();
+        String confirmMessage = welcomePagePOM.getWelcomeMessage().getText();
 
         Assert.assertEquals("Hello message is not as expected one", String.format("Hello %s (not %s? Sign out)", username, username), confirmMessage);
 
@@ -63,18 +69,25 @@ public class LoginAndRegistration {
     @Test
     public void loginUser() throws InterruptedException {
         driver = DriverHelper.getDriver();
+        LoginAndRegistrationPOM loginAndRegistrationPOM = new LoginAndRegistrationPOM(driver);
+        WelcomePagePOM welcomePagePOM = new WelcomePagePOM(driver);
         String username = getUniqueUser();
-        String password = "VeryStrongAutomation1234#$";
-        registerUser(driver, username, password);
+
+        driver.get("http://practice.automationtesting.in/my-account/");
+        loginAndRegistrationPOM.load();
+        loginAndRegistrationPOM.isLoaded();
+        loginAndRegistrationPOM.registerUser(username);
         driver.close();
 
 
         driver = DriverHelper.getDriver();
-        loginUser(driver, username, password);
+        driver.get("http://practice.automationtesting.in/my-account/");
+        //loginAndRegistrationPOM.load();
+        //loginAndRegistrationPOM.isLoaded();
+        loginAndRegistrationPOM.loginUser(username);
+        welcomePagePOM.isLoaded();
+        String confirmMessage = welcomePagePOM.getWelcomeMessage().getText();
 
-        String elementValue = ".woocommerce-MyAccount-content > p:nth-child(1)";
-        String confirmMessage = driver.findElement(By.cssSelector(elementValue)).getText();
-        Assert.assertTrue("Message element does not exist", doesElementExist(driver, SelectorTypes.CssSelector, elementValue));
         Assert.assertEquals("Hello message is not as expected one", String.format("Hello %s (not %s? Sign out)", username, username), confirmMessage);
 
         driver.close();

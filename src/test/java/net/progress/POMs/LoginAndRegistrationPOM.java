@@ -1,6 +1,5 @@
 package net.progress.POMs;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -15,40 +14,59 @@ import java.time.Duration;
 
 public class LoginAndRegistrationPOM extends LoadableComponent {
     private final WebDriver driver;
+
     @FindBy(how = How.ID, using = "reg_email")
     private WebElement registerUsername;
+
     @FindBy(how = How.ID, using = "reg_password")
     private WebElement registerPassword;
-    @FindBy(how = How.ID, using = "register")
+    private final String emailDomain = "@abv.bg";
+    private final String password = "VeryStrongAutomation1234#$";
+    @FindBy(how = How.NAME, using = "register")
     private WebElement registerButton;
+    @FindBy(how = How.ID, using = "username")
+    private WebElement loginUsername;
+    @FindBy(how = How.ID, using = "password")
+    private WebElement loginPassword;
+    @FindBy(how = How.NAME, using = "login")
+    private WebElement loginButton;
 
     public LoginAndRegistrationPOM(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
 
-    public void registerUser(String username, String password) throws InterruptedException {
+    public String getEmailDomain() {
+        return emailDomain;
+    }
 
-        WebElement loginTextBox = driver.findElement(By.id("reg_email"));
-        loginTextBox.sendKeys(username + "@abv.bg");
+    public String getPassword() {
+        return password;
+    }
 
-        WebElement passwordTextBox = driver.findElement(By.id("reg_password"));
+    public void registerUser(String username) throws InterruptedException {
+        registerUsername.sendKeys(username + emailDomain);
         for (int i = 0; i < password.length(); i++) {
-            passwordTextBox.sendKeys(password.substring(i, i + 1));
+            registerPassword.sendKeys(password.substring(i, i + 1));
             Thread.sleep(50);
         }
+        registerButton.click();
+    }
 
-        driver.findElement(By.name("register")).click();
+    public void loginUser(String username) {
+        loginUsername.sendKeys(username + emailDomain);
+        loginPassword.sendKeys(password);
+        loginButton.click();
     }
 
     @Override
-    protected void load() {
+    public void load() {
         driver.get("http://practice.automationtesting.in/my-account/");
     }
 
     @Override
-    protected void isLoaded() throws Error {
-        Wait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    public void isLoaded() throws Error {
+        Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(registerButton));
     }
 }
