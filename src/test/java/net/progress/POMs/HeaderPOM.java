@@ -23,4 +23,12 @@ public class HeaderPOM {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
+
+    public void navigateToShop() {
+        shopButton.click();
+    }
+
+    public void navigateToCart() {
+        cartButton.click();
+    }
 }

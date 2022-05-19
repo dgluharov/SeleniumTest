@@ -81,9 +81,10 @@ public class LoginAndRegistration {
 
 
         driver = DriverHelper.getDriver();
-        driver.get("http://practice.automationtesting.in/my-account/");
-        //loginAndRegistrationPOM.load();
-        //loginAndRegistrationPOM.isLoaded();
+        loginAndRegistrationPOM = new LoginAndRegistrationPOM(driver);
+        welcomePagePOM = new WelcomePagePOM(driver);
+        loginAndRegistrationPOM.load();
+        loginAndRegistrationPOM.isLoaded();
         loginAndRegistrationPOM.loginUser(username);
         welcomePagePOM.isLoaded();
         String confirmMessage = welcomePagePOM.getWelcomeMessage().getText();
