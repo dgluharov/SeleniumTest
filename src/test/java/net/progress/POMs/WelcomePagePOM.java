@@ -10,8 +10,6 @@ import org.openqa.selenium.support.ui.LoadableComponent;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
 public class WelcomePagePOM extends LoadableComponent {
     private WebDriver driver;
     @FindBy(how = How.CSS, using = ".woocommerce-MyAccount-content > p:nth-child(1)")
@@ -35,7 +33,7 @@ public class WelcomePagePOM extends LoadableComponent {
 
     @Override
     public void isLoaded() throws Error {
-        Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        Wait<WebDriver> wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.elementToBeClickable(signOutLink));
     }
 }

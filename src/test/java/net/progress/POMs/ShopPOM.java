@@ -1,6 +1,8 @@
 package net.progress.POMs;
 
+import net.progress.helper.Common;
 import net.progress.helper.DataFormats;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class ShopPOM extends LoadableComponent {
     private final WebDriver driver;
+    private final String url = "http://practice.automationtesting.in/shop/";
 
     @FindBy(how = How.CLASS_NAME, using = "type-product")
     private List<WebElement> products;
@@ -30,7 +33,7 @@ public class ShopPOM extends LoadableComponent {
         double price = 0d;
         for (WebElement product : products) {
             WebElement bookTitle = product.findElement(By.tagName("h3"));
-            if (bookTitle.getText().toLowerCase().equalsIgnoreCase(title)) {
+            if (bookTitle.getText().equalsIgnoreCase(title)) {
                 product.findElement(By.className("button")).click();
                 price = DataFormats.reformatPrice(product.findElement(By.className("amount")));
                 Thread.sleep(500);
@@ -40,13 +43,46 @@ public class ShopPOM extends LoadableComponent {
         return price;
     }
 
+    public void selectBookByName(String name) throws InterruptedException {
+        WebElement result = null;
+        for (WebElement product : products) {
+            WebElement bookTitle = product.findElement(By.tagName("h3"));
+            if (bookTitle.getText().equalsIgnoreCase(name)) {
+                result = product.findElement(By.className("button"));
+            }
+        }
+        Assert.assertNotNull(String.format("There is no item with name %s", name), result);
+        result.click();
+        Thread.sleep(200);
+    }
+
+    public void calculateProductsPrice() {
+
+    }
+
     @Override
     public void load() {
-        driver.get("http://practice.automationtesting.in/shop/");
+        driver.get(this.url);
     }
 
     @Override
     public void isLoaded() throws Error {
+        Common.checkUrl(driver, this.url);
+    }
 
+    public double getProductPrice(String bookName) {
+        double result = 0d;
+        for (WebElement product : products) {
+            WebElement bookTitle = product.findElement(By.tagName("h3"));
+            List<WebElement> bookPrices = product.findElements(By.className("amount"));
+            if (bookTitle.getText().equalsIgnoreCase(bookName)) {
+                if (bookPrices.size() > 1) {
+                    result += DataFormats.reformatPrice(bookPrices.get(1));
+                } else {
+                    result += DataFormats.reformatPrice(bookPrices.get(0));
+                }
+            }
+        }
+        return result;
     }
 }

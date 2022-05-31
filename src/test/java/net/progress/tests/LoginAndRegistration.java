@@ -13,7 +13,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -178,7 +177,7 @@ public class LoginAndRegistration {
 //                .withTimeout(Duration.ofSeconds(10))
 //                .pollingEvery(Duration.ofMillis(500));
 
-        Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        Wait<WebDriver> wait = new WebDriverWait(driver, 20);
 
         WebElement usernameField = wait.until(ExpectedConditions.elementToBeClickable(By.id("username")));
 
@@ -202,10 +201,8 @@ public class LoginAndRegistration {
 
     private String getUniqueUser() {
         String result = "User_";
-
         Random random = new Random();
         result += random.nextInt(10000);
-
         return result;
     }
     /*Homework*/
